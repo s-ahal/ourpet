@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <title>this is our pet</title>
+  </head>
+  <body>
+    <h1 id="pet-name"></h1>
+    <div id="popup-menu" class="popup-menu">
+      <button id="close-menu">X</button>
+      <ul>
+        <li><a href="petdex.html">PetDex</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+
+    <div id="menu-button-container">
+      <button id="open-menu">Open Menu</button>
+    </div>
+    <div id="interaction-container"></div>
+    <canvas id="main-canvas"></canvas>
+    <div id="info-container">
+      <div id="stats">
+        <h4>stats:</h4>
+        <span id="happiness-stat">happiness: </span>
+        <span id="health-stat">health: </span>
+        <span id="cleanliness-stat">cleanliness: </span>
+      </div>
+
+      <div id="buttons-container">
+        <button id="play-button">play with me</button>
+        <button id="feed-button">feed me</button>
+        <button id="clean-button">clean me</button>
+      </div>
+    </div>
+    </body>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

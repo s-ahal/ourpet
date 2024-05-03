@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="dexstyle.css" />
+    <title>petDex</title>
+  </head>
+  <body>
+    <div id="popup-menu" class="popup-menu">
+      <button id="close-menu">X</button>
+      <ul>
+        <li><a id="random-pet-link" href="/">Random Pet</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+
+    <div id="menu-button-container">
+      <button id="open-menu">Open Menu</button>
+    </div>
+    <h1>PetDex</h1>
+    <div id="list-container">
+    <ul id="pet-list"></ul>
+  </div>
+  <div id="new-pet-popup" class="popup">
+    <div class="popup-content">
+      <span id="close-popup" class="close">&times;</span>
+      <p>what should the new pet's name be?</p>
+      <input type="text" id="pet-name-input">
+      <button id="submit-pet-name">create</button>
+    </div>
+  </div>
+  <button id="new-pet">create a new pet</button>
+    </body>
+    <script type="module" src="/dex.js"></script>
+  </body>
+</html>
