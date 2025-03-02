@@ -1,5 +1,7 @@
 # Our Pet :3
 
+Refactor for Writing Good Code at ITP.
+
 
 ## Inspiration/Concept
 
