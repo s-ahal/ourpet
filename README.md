@@ -1,8 +1,5 @@
-# Dynamic Web: Final
+# Our Pet :3
 
-## How to run the application:
-
-Visit [http://138.197.122.251:3000/](http://138.197.122.251:3000/)
 
 ## Inspiration/Concept
 
@@ -14,4 +11,4 @@ I used Replit as my initial development environment. This was fine when there wa
 
 I wireframed this with a simple drawing -- there are only three pages, one of which (the about) is totally static. I decided to use query strings to identify the different pets so I didn't have to create a new page for every pet.
 
-It's a fairly simple website, but I think that it accomplishes what I wanted for it, which was to create something people could feel attached to, and to explore that concept.
+It's a fairly simple website, but I think that it accomplishes what I wanted for it, which was to create something people could feel attached to.
