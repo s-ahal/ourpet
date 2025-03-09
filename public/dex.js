@@ -6,7 +6,7 @@ document.getElementById("close-menu").addEventListener("click", function () {
   document.getElementById("popup-menu").style.display = "none";
 });
 
-window.addEventListener("DOMContentLoaded", (event) => {
+window.onload = async () => {
   fetch("/all-pets")
     .then((response) => response.json())
     .then((pets) => {
@@ -14,7 +14,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       pets.forEach((pet) => {
         const listItem = document.createElement("li");
         const link = document.createElement("a");
-        link.href = `/?petID=${pet.id}`;
+        link.href = `/?petID=${pet._id}`;
         link.textContent = pet.name;
         listItem.appendChild(link);
         petList.appendChild(listItem);
@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         randomPetLink.href = `/?petID=${randomPet.id}`;
       }
     });
-});
+};
 
 document.getElementById("new-pet").addEventListener("click", function () {
   document.getElementById("new-pet-popup").style.display = "flex";
@@ -57,8 +57,7 @@ document
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ name: petName }),
-        }); // Add closing parenthesis and curly brace here
-
+        });
         const newPetID = await response.text();
         window.location.href = `index.html?petID=${newPetID}`;
       } catch (err) {

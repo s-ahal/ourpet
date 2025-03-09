@@ -1,44 +1,71 @@
-console.log("client / frontend! ");
+window.onload = async () => {
+  // Initialize the pet data when the page loads
+  const petID = getPetID();
+  const petData = await getPetData(petID);
+  updatePetStatus(petData);
 
-document.getElementById("open-menu").addEventListener("click", function () {
-  document.getElementById("popup-menu").style.display = "flex";
-});
+  // Set up the page
+  const pageTitle = document.getElementById("pet-name");
+  pageTitle.innerHTML = petData.name;
+  addEventListeners();
+  startPetAnimation();
 
-document.getElementById("close-menu").addEventListener("click", function () {
-  document.getElementById("popup-menu").style.display = "none";
-});
+  setInterval(async () => {
+    const petID = getPetID();
+    const petData = await getPetData(petID);
+    updatePetStatus(petData);
+  }, 10000); //Update the pet data on the frontend every 10 seconds
+};
 
-const urlParams = new URLSearchParams(window.location.search);
-const petID = urlParams.get("petID") || 1;
+function getPetID() {
+  // Get the ID of the current pet from the URL
+  const petID = new URLSearchParams(window.location.search).get("petID") || 1;
+  return petID;
+}
 
-let playButton = document.getElementById("play-button");
-let feedButton = document.getElementById("feed-button");
-let cleanButton = document.getElementById("clean-button");
+function addEventListeners() {
+  // Add open and close functions for the popup menu
+  document.getElementById("open-menu").addEventListener("click", function () {
+    document.getElementById("popup-menu").style.display = "flex";
+  });
 
-let happinessStat = document.getElementById("happiness-stat");
-let healthStat = document.getElementById("health-stat");
-let cleanlinessStat = document.getElementById("cleanliness-stat");
+  document.getElementById("close-menu").addEventListener("click", function () {
+    document.getElementById("popup-menu").style.display = "none";
+  });
 
-playButton.addEventListener("click", () => {
-  interact(petID, "play");
-});
+  // Add callbacks for interaction buttons
+  const playButton = document.getElementById("play-button");
+  const feedButton = document.getElementById("feed-button");
+  const cleanButton = document.getElementById("clean-button");
 
-feedButton.addEventListener("click", () => {
-  interact(petID, "feed");
-});
+  playButton.addEventListener("click", () => {
+    const petID = getPetID();
+    interact(petID, "play");
+  });
 
-cleanButton.addEventListener("click", () => {
-  interact(petID, "clean");
-});
+  feedButton.addEventListener("click", () => {
+    const petID = getPetID();
+    interact(petID, "feed");
+  });
 
-// Function to update pet status on the frontend
+  cleanButton.addEventListener("click", () => {
+    const petID = getPetID();
+    interact(petID, "clean");
+  });
+}
+
+// Update pet stats on the frontend
 function updatePetStatus(pet) {
-  healthStat.innerHTML = `health: ${pet.health}%`;
+  const happinessStat = document.getElementById("happiness-stat");
+  const healthStat = document.getElementById("health-stat");
+  const cleanlinessStat = document.getElementById("cleanliness-stat");
+
   happinessStat.innerHTML = `happiness: ${pet.happiness}%`;
+  healthStat.innerHTML = `health: ${pet.health}%`;
   cleanlinessStat.innerHTML = `cleanliness: ${pet.cleanliness}%`;
 }
 
-// Function to interact with the pet
+// Send a POST request to the backend with interaction details when the user interacts with pet
 async function interact(petID, action) {
   const response = await fetch(`/interact/${petID}`, {
     method: "POST",
@@ -51,147 +78,127 @@ async function interact(petID, action) {
   updatePetStatus(data);
 }
 
-// Function to fetch pet data from the backend
+// Fetch pet data from the backend
 async function getPetData(petID) {
   const response = await fetch(`/pet/${petID}`);
   const data = await response.json();
   return data;
 }
 
-// Initialize the pet data when the page loads
-document.addEventListener("DOMContentLoaded", async () => {
-  const petData = await getPetData(petID);
-  updatePetStatus(petData);
-  document.getElementById("pet-name").innerHTML = petData.name;
-});
+function startPetAnimation() {
+  // Set up the canvas
+  const canvas = document.getElementById("main-canvas");
+  const ctx = canvas.getContext("2d");
 
-//Periodically update the pet data on the frontend
-setInterval(async () => {
-  const petData = await getPetData(petID);
-  updatePetStatus(petData);
-}, 10000);
+  if (window.innerWidth >= window.innerHeight) {
+    canvas.height = window.innerHeight;
+    canvas.width = canvas.height;
+  } else {
+    canvas.width = window.innerWidth;
+    canvas.height = canvas.width;
+  }
+  ctx.fillStyle = "#759e61";
 
-let canvas = document.getElementById("main-canvas");
-let ctx = canvas.getContext("2d");
+  // Draw the pet to the canvas
+  const frames = [() => drawFrame1(canvas, ctx), () => drawFrame2(canvas, ctx)]; // Pet animation frames
 
-let width;
-let height;
-if (window.innerWidth >= window.innerHeight) {
-  canvas.height = window.innerHeight;
-  canvas.width = canvas.height;
-  width = canvas.width;
-  height = canvas.height;
-} else {
-  canvas.width = window.innerWidth;
-  canvas.height = canvas.width;
-  width = canvas.width;
-  height = canvas.height;
+  let currentFrameIndex = 0;
+  frames[currentFrameIndex](canvas, ctx);
+
+  setInterval(() => {
+    currentFrameIndex = (currentFrameIndex + 1) % frames.length;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frames[currentFrameIndex]();
+  }, 500); // Change the animation frame every 500ms
 }
 
-ctx.fillStyle = "#759e61";
-
-const frames = [drawFrame1, drawFrame2];
-let currentFrameIndex = 0;
-
-drawFrame();
-
-setInterval(() => {
-  currentFrameIndex = (currentFrameIndex + 1) % frames.length;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame();
-}, 500);
-
-function drawFrame() {
-  frames[currentFrameIndex]();
+function drawFrame1(canvas, ctx) {
+  // Draw Row 1
+  drawSquare(canvas, ctx, (14 * canvas.width) / 30, (10 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (15 * canvas.width) / 30, (10 * canvas.height) / 30);
+  // Row 2
+  drawSquare(canvas, ctx, (12 * canvas.width) / 30, (11 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (13 * canvas.width) / 30, (11 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (14 * canvas.width) / 30, (11 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (15 * canvas.width) / 30, (11 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (16 * canvas.width) / 30, (11 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (17 * canvas.width) / 30, (11 * canvas.height) / 30);
+  // Row 3
+  drawSquare(canvas, ctx, (11 * canvas.width) / 30, (12 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (18 * canvas.width) / 30, (12 * canvas.height) / 30);
+  // Row 4
+  drawSquare(canvas, ctx, (10 * canvas.width) / 30, (13 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (11 * canvas.width) / 30, (13 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (13 * canvas.width) / 30, (13 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (16 * canvas.width) / 30, (13 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (18 * canvas.width) / 30, (13 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (19 * canvas.width) / 30, (13 * canvas.height) / 30);
+  // Row 5
+  drawSquare(canvas, ctx, (10 * canvas.width) / 30, (14 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (13 * canvas.width) / 30, (14 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (16 * canvas.width) / 30, (14 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (19 * canvas.width) / 30, (14 * canvas.height) / 30);
+  // Row 6
+  drawSquare(canvas, ctx, (10 * canvas.width) / 30, (15 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (19 * canvas.width) / 30, (15 * canvas.height) / 30);
+  // Row 7
+  drawSquare(canvas, ctx, (10 * canvas.width) / 30, (16 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (14 * canvas.width) / 30, (16 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (15 * canvas.width) / 30, (16 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (19 * canvas.width) / 30, (16 * canvas.height) / 30);
+  // Row 8
+  drawSquare(canvas, ctx, (11 * canvas.width) / 30, (17 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (18 * canvas.width) / 30, (17 * canvas.height) / 30);
+  // Row 9
+  drawSquare(canvas, ctx, (12 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (13 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (14 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (15 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (16 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (17 * canvas.width) / 30, (18 * canvas.height) / 30);
 }
 
-function drawFrame1() {
-  //row 1
-  drawSquare((14 * width) / 30, (10 * height) / 30);
-  drawSquare((15 * width) / 30, (10 * height) / 30);
-  //2
-  drawSquare((12 * width) / 30, (11 * height) / 30);
-  drawSquare((13 * width) / 30, (11 * height) / 30);
-  drawSquare((14 * width) / 30, (11 * height) / 30);
-  drawSquare((15 * width) / 30, (11 * height) / 30);
-  drawSquare((16 * width) / 30, (11 * height) / 30);
-  drawSquare((17 * width) / 30, (11 * height) / 30);
-  //3
-  drawSquare((11 * width) / 30, (12 * height) / 30);
-  drawSquare((18 * width) / 30, (12 * height) / 30);
-  //4
-  drawSquare((10 * width) / 30, (13 * height) / 30);
-  drawSquare((11 * width) / 30, (13 * height) / 30);
-  drawSquare((13 * width) / 30, (13 * height) / 30);
-  drawSquare((16 * width) / 30, (13 * height) / 30);
-  drawSquare((18 * width) / 30, (13 * height) / 30);
-  drawSquare((19 * width) / 30, (13 * height) / 30);
-  //5
-  drawSquare((10 * width) / 30, (14 * height) / 30);
-  drawSquare((13 * width) / 30, (14 * height) / 30);
-  drawSquare((16 * width) / 30, (14 * height) / 30);
-  drawSquare((19 * width) / 30, (14 * height) / 30);
-  //6
-  drawSquare((10 * width) / 30, (15 * height) / 30);
-  drawSquare((19 * width) / 30, (15 * height) / 30);
-  //7
-  drawSquare((10 * width) / 30, (16 * height) / 30);
-  drawSquare((14 * width) / 30, (16 * height) / 30);
-  drawSquare((15 * width) / 30, (16 * height) / 30);
-  drawSquare((19 * width) / 30, (16 * height) / 30);
-  //8
-  drawSquare((11 * width) / 30, (17 * height) / 30);
-  drawSquare((18 * width) / 30, (17 * height) / 30);
-  //9
-  drawSquare((12 * width) / 30, (18 * height) / 30);
-  drawSquare((13 * width) / 30, (18 * height) / 30);
-  drawSquare((14 * width) / 30, (18 * height) / 30);
-  drawSquare((15 * width) / 30, (18 * height) / 30);
-  drawSquare((16 * width) / 30, (18 * height) / 30);
-  drawSquare((17 * width) / 30, (18 * height) / 30);
+function drawFrame2(canvas, ctx) {
+  // Draw Row 2
+  drawSquare(canvas, ctx, (14 * canvas.width) / 30, (11 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (15 * canvas.width) / 30, (11 * canvas.height) / 30);
+  // Row 3
+  drawSquare(canvas, ctx, (12 * canvas.width) / 30, (12 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (13 * canvas.width) / 30, (12 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (14 * canvas.width) / 30, (12 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (15 * canvas.width) / 30, (12 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (16 * canvas.width) / 30, (12 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (17 * canvas.width) / 30, (12 * canvas.height) / 30);
+  // Row 4
+  drawSquare(canvas, ctx, (11 * canvas.width) / 30, (13 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (18 * canvas.width) / 30, (13 * canvas.height) / 30);
+  // Row 5
+  drawSquare(canvas, ctx, (10 * canvas.width) / 30, (14 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (11 * canvas.width) / 30, (14 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (18 * canvas.width) / 30, (14 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (19 * canvas.width) / 30, (14 * canvas.height) / 30);
+  // Row 6
+  drawSquare(canvas, ctx, (10 * canvas.width) / 30, (15 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (13 * canvas.width) / 30, (15 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (16 * canvas.width) / 30, (15 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (19 * canvas.width) / 30, (15 * canvas.height) / 30);
+  // Row 7
+  drawSquare(canvas, ctx, (10 * canvas.width) / 30, (16 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (19 * canvas.width) / 30, (16 * canvas.height) / 30);
+  // Row 8
+  drawSquare(canvas, ctx, (11 * canvas.width) / 30, (17 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (14 * canvas.width) / 30, (17 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (15 * canvas.width) / 30, (17 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (18 * canvas.width) / 30, (17 * canvas.height) / 30);
+  // Row 9
+  drawSquare(canvas, ctx, (12 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (13 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (14 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (15 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (16 * canvas.width) / 30, (18 * canvas.height) / 30);
+  drawSquare(canvas, ctx, (17 * canvas.width) / 30, (18 * canvas.height) / 30);
 }
 
-function drawFrame2() {
-  //row 2
-  drawSquare((14 * width) / 30, (11 * height) / 30);
-  drawSquare((15 * width) / 30, (11 * height) / 30);
-  //3
-  drawSquare((12 * width) / 30, (12 * height) / 30);
-  drawSquare((13 * width) / 30, (12 * height) / 30);
-  drawSquare((14 * width) / 30, (12 * height) / 30);
-  drawSquare((15 * width) / 30, (12 * height) / 30);
-  drawSquare((16 * width) / 30, (12 * height) / 30);
-  drawSquare((17 * width) / 30, (12 * height) / 30);
-  //4
-  drawSquare((11 * width) / 30, (13 * height) / 30);
-  drawSquare((18 * width) / 30, (13 * height) / 30);
-  //5
-  drawSquare((10 * width) / 30, (14 * height) / 30);
-  drawSquare((11 * width) / 30, (14 * height) / 30);
-  drawSquare((18 * width) / 30, (14 * height) / 30);
-  drawSquare((19 * width) / 30, (14 * height) / 30);
-  //6
-  drawSquare((10 * width) / 30, (15 * height) / 30);
-  drawSquare((13 * width) / 30, (15 * height) / 30);
-  drawSquare((16 * width) / 30, (15 * height) / 30);
-  drawSquare((19 * width) / 30, (15 * height) / 30);
-  //7
-  drawSquare((10 * width) / 30, (16 * height) / 30);
-  drawSquare((19 * width) / 30, (16 * height) / 30);
-  //8
-  drawSquare((11 * width) / 30, (17 * height) / 30);
-  drawSquare((14 * width) / 30, (17 * height) / 30);
-  drawSquare((15 * width) / 30, (17 * height) / 30);
-  drawSquare((18 * width) / 30, (17 * height) / 30);
-  //9
-  drawSquare((12 * width) / 30, (18 * height) / 30);
-  drawSquare((13 * width) / 30, (18 * height) / 30);
-  drawSquare((14 * width) / 30, (18 * height) / 30);
-  drawSquare((15 * width) / 30, (18 * height) / 30);
-  drawSquare((16 * width) / 30, (18 * height) / 30);
-  drawSquare((17 * width) / 30, (18 * height) / 30);
-}
-
-function drawSquare(x, y) {
-  ctx.fillRect(x, y, width / 30, height / 30);
+function drawSquare(canvas, ctx, x, y) {
+  ctx.fillRect(x, y, canvas.width / 30, canvas.height / 30);
 }
