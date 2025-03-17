@@ -4,39 +4,31 @@ const PetView = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // Setting up the canvas
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width: number;
-    let height: number;
-    if (window.innerWidth >= window.innerHeight) {
-      canvas.height = window.innerHeight;
-      canvas.width = canvas.height;
-      width = canvas.width;
-      height = canvas.height;
-    } else {
-      canvas.width = window.innerWidth;
-      canvas.height = canvas.width;
-      width = canvas.width;
-      height = canvas.height;
-    }
+    let width: number = canvas.width;
+    let height: number = canvas.height;
 
-    ctx.fillStyle = "#759e61";
+    ctx.fillStyle = "#4d4d4d";
 
-    const frames = [drawFrame1, drawFrame2];
+    const frames = [drawFrame1, drawFrame2]; // Array of frame functions
     let currentFrameIndex = 0;
 
-    drawFrame(ctx, width, height, currentFrameIndex);
+    drawFrame(ctx, width, height, currentFrameIndex); //Draw the first frame
 
     setInterval(() => {
+      //Draw the next frame every 500ms
       currentFrameIndex = (currentFrameIndex + 1) % frames.length;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, width, height);
       drawFrame(ctx, width, height, currentFrameIndex);
     }, 500);
   }, []);
 
+  // Draw frame 1 square by square
   function drawFrame1(
     ctx: CanvasRenderingContext2D,
     width: number,
@@ -87,6 +79,7 @@ const PetView = () => {
     drawSquare(ctx, (17 * width) / 30, (18 * height) / 30, width, height);
   }
 
+  // Draw frame 2 square by square
   function drawFrame2(
     ctx: CanvasRenderingContext2D,
     width: number,
@@ -142,7 +135,7 @@ const PetView = () => {
     ctx.fillRect(x, y, width / 30, height / 30);
   }
 
-  function drawFrame(
+  function drawFrame( //Determine which frame to draw
     ctx: CanvasRenderingContext2D,
     width: number,
     height: number,

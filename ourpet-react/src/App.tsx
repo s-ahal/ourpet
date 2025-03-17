@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PetView from "./PetView";
+import PetDex from "./PetDex";
+import InteractionButton from "./InteractionButton";
 import "./App.css";
 
 function App() {
@@ -12,6 +14,7 @@ function App() {
   }
 
   const [petData, setPetData] = useState<PetData | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
 
   // Get the ID of the current pet from the URL
   const getPetID = (): string => {
@@ -27,25 +30,6 @@ function App() {
     return data;
   };
 
-  // Send a POST request to the backend with interaction details
-  const interact = async (petID: string, action: string) => {
-    fetch(`http://localhost:4000/interact/${petID}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ action }),
-    });
-
-    // Fetch the updated pet data after interaction
-    try {
-      const petID = getPetID();
-      getPetData(petID).then((data) => setPetData(data));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   // Fetch and populate page with pet data on render
   useEffect(() => {
     const petID = getPetID();
@@ -54,47 +38,56 @@ function App() {
 
   return (
     <>
-      <h1 id="pet-name">{petData?.name}</h1>
-      <div id="popup-menu" className="popup-menu">
-        <button id="close-menu">X</button>
-        <ul>
-          <li>
-            <a href="petdex.html">PetDex</a>
-          </li>
-          <li>
-            <a href="about.html">About</a>
-          </li>
-        </ul>
-      </div>
-
-      <div id="menu-button-container">
-        <button id="open-menu">Open Menu</button>
-      </div>
-      <div id="interaction-container"></div>
-      <PetView />
-      <div id="info-container">
-        <div id="stats">
-          <h4>stats:</h4>
-          <span id="happiness-stat">happiness: {petData?.happiness}</span>
-          <span id="health-stat">health: {petData?.health}</span>
-          <span id="cleanliness-stat">cleanliness: {petData?.cleanliness}</span>
+      <div id="view-container">
+        <div id="top">
+          <div id="stats">
+            <span>stats:</span>
+            <span id="happiness-stat">happiness: {petData?.happiness}</span>
+            <span id="health-stat">health: {petData?.health}</span>
+            <span id="cleanliness-stat">
+              cleanliness: {petData?.cleanliness}
+            </span>
+          </div>
+          <PetView /> {/* Pet animation */}
+          {!showMenu && (
+            <button id="open-menu" onClick={() => setShowMenu(true)}>
+              Open Menu
+            </button>
+          )}
+          {showMenu && (
+            <div id="popup-menu">
+              <button id="close-menu" onClick={() => setShowMenu(false)}>
+                X
+              </button>
+              <PetDex /> {/* Index of all pets */}
+            </div>
+          )}
         </div>
-
-        <div id="buttons-container">
-          <button
-            onClick={() => {
-              petData && interact(petData._id, "play");
-            }}
-          >
-            play with me
-          </button>
-          <button onClick={() => petData && interact(petData._id, "feed")}>
-            feed me
-          </button>
-          <button onClick={() => petData && interact(petData._id, "clean")}>
-            clean me
-          </button>
+        <div id="dialog">
+          <p id="dialog-text">
+            Hello, I'm <strong>{petData?.name}</strong>!
+          </p>
         </div>
+      </div>
+      <div id="buttons-container">
+        <InteractionButton
+          petID={petData?._id || ""}
+          action="play"
+          fetchPetData={getPetData}
+          updatePetData={setPetData}
+        />
+        <InteractionButton
+          petID={petData?._id || ""}
+          action="feed"
+          fetchPetData={getPetData}
+          updatePetData={setPetData}
+        />
+        <InteractionButton
+          petID={petData?._id || ""}
+          action="clean"
+          fetchPetData={getPetData}
+          updatePetData={setPetData}
+        />
       </div>
     </>
   );

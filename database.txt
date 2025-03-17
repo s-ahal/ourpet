@@ -1,1 +1,3 @@
-{"name":"my friend","happiness":10,"health":10,"cleanliness":10,"_id":1}
+{"name":"fish","happiness":40,"health":40,"cleanliness":50,"_id":1}
+{"name":"sack","happiness":100,"health":50,"cleanliness":50,"_id":4}
+{"name":"your friend","happiness":100,"health":100,"cleanliness":100,"_id":5}

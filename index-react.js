@@ -33,12 +33,18 @@ app.post("/interact/:petID", async (req, res) => {
   const { action } = req.body;
   try {
     let pet = await database.findOneAsync({ _id: Number(req.params.petID) });
-    if (action === "play") {
-      pet.happiness = Math.min(100, pet.happiness + 10);
-    } else if (action === "feed") {
-      pet.health = Math.min(100, pet.health + 10);
-    } else if (action === "clean") {
-      pet.cleanliness = Math.min(100, pet.cleanliness + 10);
+    switch (action) {
+      case "play":
+        pet.happiness = Math.min(100, pet.happiness + 10);
+        break;
+      case "feed":
+        pet.health = Math.min(100, pet.health + 10);
+        break;
+      case "clean":
+        pet.cleanliness = Math.min(100, pet.cleanliness + 10);
+        break;
+      default:
+        throw new Error("This action is invalid.");
     }
     database.update(
       { _id: Number(req.params.petID) },
@@ -87,7 +93,7 @@ app.post("/create-pet", async (req, res) => {
   res.send(String(newPetID));
 });
 
-// Look up the most recently created pet in the database and send the next available ID to the frontend
+// Look up the most recently created pet in the database and return the next available ID to the frontend
 async function getNextPetID() {
   try {
     const highestPet = await database.findAsync({}).sort({ _id: -1 });

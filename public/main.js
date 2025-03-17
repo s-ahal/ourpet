@@ -1,7 +1,7 @@
 window.onload = async () => {
   // Initialize the pet data when the page loads
   const petID = getPetID();
-  const petData = await getPetData(petID);
+  let petData = await getPetData(petID);
   updatePetStatus(petData);
 
   // Set up the page
@@ -11,8 +11,7 @@ window.onload = async () => {
   startPetAnimation();
 
   setInterval(async () => {
-    const petID = getPetID();
-    const petData = await getPetData(petID);
+    petData = await getPetData(petID);
     updatePetStatus(petData);
   }, 10000); //Update the pet data on the frontend every 10 seconds
 };
