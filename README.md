@@ -9,8 +9,4 @@ This is a website that lets you create and take care of a digital pet. You can s
 
 ## Process
 
-I used Replit as my initial development environment. This was fine when there was only one pet, and its information could be stored within a variable in the backend code. I moved this over to Digital Ocean and implemented a MongoDB database for further development. It is running off a Node server using Express. 
-
-I wireframed this with a simple drawing -- there are only three pages, one of which (the about) is totally static. I decided to use query strings to identify the different pets so I didn't have to create a new page for every pet.
-
-It's a fairly simple website, but I think that it accomplishes what I wanted for it, which was to create something people could feel attached to.
+For the refactor, I built a new frontend in React, modularized the components, and overall tried to make the code conform to a functional programming paradigm. I included some unit tests for the React frontend. 
